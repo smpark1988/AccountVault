@@ -1,0 +1,20 @@
+bin/
+obj/
+.dotnet/
+.vs/
+*.user
+*.suo
+
+# Local encrypted vault data and runtime logs
+data/
+**/data/
+*.log
+
+# UI preview helper output
+.ui-preview/
+ui-preview/
+
+# OS/editor noise
+Thumbs.db
+Desktop.ini
+.DS_Store

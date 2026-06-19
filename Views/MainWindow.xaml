@@ -1,0 +1,252 @@
+<Window x:Class="AccountVault.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="AccountVault"
+        Width="1180"
+        Height="760"
+        MinWidth="940"
+        MinHeight="620"
+        WindowStartupLocation="CenterScreen"
+        Closed="Window_Closed">
+    <DockPanel Background="{StaticResource AppBackgroundBrush}">
+        <Border DockPanel.Dock="Top"
+                Background="{StaticResource SurfaceBrush}"
+                BorderBrush="{StaticResource BorderBrushSoft}"
+                BorderThickness="0,0,0,1"
+                Padding="22,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="22" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                    <TextBlock Text="AccountVault"
+                               Style="{StaticResource PageTitleText}" />
+                    <TextBlock Text="로컬 암호화 계정 보관함"
+                               Style="{StaticResource MutedText}"
+                               Margin="0,2,0,0" />
+                </StackPanel>
+
+                <Grid Grid.Column="2"
+                      MinWidth="380"
+                      Width="380"
+                      HorizontalAlignment="Left"
+                      VerticalAlignment="Center">
+                    <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                             Padding="20,6,12,6"
+                             FontSize="14"
+                             ToolTip="사이트명, URL, 아이디 검색" />
+                    <TextBlock FontFamily="Segoe MDL2 Assets"
+                               Text="&#xE721;"
+                               Foreground="{StaticResource MutedTextBrush}"
+                               Margin="13,0,0,0"
+                               VerticalAlignment="Center"
+                               IsHitTestVisible="False" />
+                </Grid>
+
+                <StackPanel Grid.Column="3"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                    <Button Style="{StaticResource PrimaryButtonStyle}"
+                            Command="{Binding AddCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource IconGlyph}" Text="&#xE710;" />
+                            <TextBlock Text="계정 추가" />
+                        </StackPanel>
+                    </Button>
+                    <Button Click="ExportBackup_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource IconGlyph}" Text="&#xE159;" />
+                            <TextBlock Text="내보내기" />
+                        </StackPanel>
+                    </Button>
+                    <Button Click="ImportBackup_Click">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource IconGlyph}" Text="&#xE8B5;" />
+                            <TextBlock Text="가져오기" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <StatusBar DockPanel.Dock="Bottom"
+                   BorderBrush="{StaticResource BorderBrushSoft}"
+                   BorderThickness="0,1,0,0">
+            <StatusBarItem Content="{Binding StatusMessage}" />
+        </StatusBar>
+
+        <Grid Margin="22">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" MinWidth="500" />
+                <ColumnDefinition Width="18" />
+                <ColumnDefinition Width="1.15*" MinWidth="330" />
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0"
+                    Style="{StaticResource PanelBorder}"
+                    Effect="{StaticResource CardShadow}">
+                <DockPanel>
+                    <Border DockPanel.Dock="Top"
+                            Background="{StaticResource SurfaceAltBrush}"
+                            BorderBrush="{StaticResource BorderBrushSoft}"
+                            BorderThickness="0,0,0,1"
+                            CornerRadius="8,8,0,0"
+                            Padding="16,12">
+                        <Grid>
+                            <TextBlock Text="계정 목록"
+                                       Style="{StaticResource SectionTitleText}"
+                                       VerticalAlignment="Center" />
+                            <TextBlock Text="{Binding Accounts.Count, StringFormat='{}{0}개'}"
+                                       Foreground="{StaticResource MutedTextBrush}"
+                                       HorizontalAlignment="Right"
+                                       VerticalAlignment="Center" />
+                        </Grid>
+                    </Border>
+
+                    <ListView ItemsSource="{Binding AccountsView}"
+                              SelectedItem="{Binding SelectedAccount, Mode=TwoWay}"
+                              Margin="0,4,0,8">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn Header="사이트명" Width="160">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding SiteName}"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       ToolTip="{Binding SiteName}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="URL" Width="190">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Url}"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       ToolTip="{Binding Url}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn Header="아이디" Width="180">
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding UserId}"
+                                                       TextTrimming="CharacterEllipsis"
+                                                       ToolTip="{Binding UserId}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </DockPanel>
+            </Border>
+
+            <Border Grid.Column="2"
+                    Style="{StaticResource PanelBorder}"
+                    Effect="{StaticResource CardShadow}"
+                    Padding="16">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0">
+                        <TextBlock Text="상세 정보"
+                                   Style="{StaticResource SectionTitleText}"
+                                   Margin="0,0,0,12" />
+
+                        <TextBlock Text="사이트명" Style="{StaticResource LabelText}" />
+                        <TextBlock Text="{Binding SelectedAccount.SiteName, TargetNullValue='선택된 계정 없음'}"
+                                   FontSize="22"
+                                   FontWeight="SemiBold"
+                                   TextWrapping="Wrap"
+                                   Margin="0,0,0,12" />
+
+                        <TextBlock Text="URL" Style="{StaticResource LabelText}" />
+                        <TextBlock Text="{Binding SelectedAccount.Url}"
+                                   TextWrapping="Wrap"
+                                   Foreground="{StaticResource TextBrush}"
+                                   Margin="0,0,0,12" />
+
+                        <TextBlock Text="아이디" Style="{StaticResource LabelText}" />
+                        <DockPanel Margin="0,0,0,12">
+                            <Button DockPanel.Dock="Right"
+                                    Width="78"
+                                    Command="{Binding CopyUserIdCommand}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Style="{StaticResource IconGlyph}" Text="&#xE8C8;" />
+                                    <TextBlock Text="복사" />
+                                </StackPanel>
+                            </Button>
+                            <TextBox Text="{Binding SelectedAccount.UserId, Mode=OneWay}"
+                                     IsReadOnly="True" />
+                        </DockPanel>
+
+                        <TextBlock Text="비밀번호" Style="{StaticResource LabelText}" />
+                        <DockPanel Margin="0,0,0,10">
+                            <Button DockPanel.Dock="Right"
+                                    Width="78"
+                                    Command="{Binding CopyPasswordCommand}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Style="{StaticResource IconGlyph}" Text="&#xE8C8;" />
+                                    <TextBlock Text="복사" />
+                                </StackPanel>
+                            </Button>
+                            <Button DockPanel.Dock="Right"
+                                    Width="82"
+                                    Command="{Binding TogglePasswordCommand}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Style="{StaticResource IconGlyph}" Text="&#xE890;" />
+                                    <TextBlock Text="{Binding PasswordToggleText}" />
+                                </StackPanel>
+                            </Button>
+                            <TextBox Text="{Binding DisplayedPassword, Mode=OneWay}"
+                                     IsReadOnly="True" />
+                        </DockPanel>
+                    </StackPanel>
+
+                    <Grid Grid.Row="1" MinHeight="64">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="메모" Style="{StaticResource LabelText}" />
+                        <TextBox Grid.Row="1"
+                                 Text="{Binding SelectedAccount.Memo, Mode=OneWay}"
+                                 IsReadOnly="True"
+                                 TextWrapping="Wrap"
+                                 AcceptsReturn="True"
+                                 VerticalScrollBarVisibility="Auto"
+                                 VerticalContentAlignment="Top" />
+                    </Grid>
+
+                    <StackPanel Grid.Row="2"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Right"
+                                Margin="0,12,0,0">
+                        <Button Command="{Binding EditCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource IconGlyph}" Text="&#xE70F;" />
+                                <TextBlock Text="수정" />
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource DangerButtonStyle}"
+                                Command="{Binding DeleteCommand}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource IconGlyph}" Text="&#xE74D;" />
+                                <TextBlock Text="삭제" />
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Grid>
+    </DockPanel>
+</Window>
