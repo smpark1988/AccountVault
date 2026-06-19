@@ -73,8 +73,9 @@ bin/Debug/net8.0-windows/data/vault.dat
 
 - C#
 - .NET 8 이상
-- WPF
-- 외부 NuGet 패키지 없음
+- WPF 데스크톱 앱
+- .NET MAUI Android 모바일 앱
+- 공통 암호화/저장 로직은 `AccountVault.Core`로 분리
 
 ## 실행 방법
 
@@ -84,16 +85,74 @@ bin/Debug/net8.0-windows/data/vault.dat
 dotnet --info
 ```
 
-프로젝트를 빌드합니다.
+데스크톱 앱만 빌드합니다.
 
 ```powershell
-dotnet build
+dotnet build src/AccountVault.Desktop/AccountVault.Desktop.csproj
 ```
 
-앱을 실행합니다.
+데스크톱 앱을 실행합니다.
 
 ```powershell
-dotnet run
+dotnet run --project src/AccountVault.Desktop/AccountVault.Desktop.csproj
+```
+
+## 모바일 앱
+
+모바일 앱은 .NET MAUI 기반이며 현재 Android 타깃을 우선 지원합니다.
+
+모바일 앱은 데스크톱과 같은 `AccountVault.Core`를 사용합니다.
+
+- 같은 `AccountItem`, `VaultData`, `VaultFile` 모델 사용
+- 같은 PBKDF2-SHA256 / AES-GCM 암호화 로직 사용
+- 같은 `vault.dat` JSON 메타데이터 구조 사용
+
+현재 모바일 앱에서 구현된 기능은 다음과 같습니다.
+
+- 최초 마스터 비밀번호 설정
+- 로그인
+- 계정 목록 및 검색
+- 계정 추가, 수정, 삭제
+- 아이디 및 비밀번호 복사
+- 비밀번호 복사 후 30초 뒤 조건부 클립보드 삭제
+- 백업 내보내기
+- 앱이 백그라운드로 전환될 때 세션 잠금
+
+백업 가져오기는 모바일 파일 선택과 비밀번호 재확인 UI를 더 다듬은 뒤 추가할 예정입니다.
+
+모바일 저장 위치는 데스크톱과 다릅니다. 모바일에서는 실행 파일 옆 경로를 사용할 수 없으므로 앱 전용 데이터 폴더 아래에 저장합니다.
+
+```text
+앱 전용 데이터 폴더/data/vault.dat
+```
+
+Android 빌드에 필요한 워크로드를 설치합니다.
+
+```powershell
+dotnet workload restore src/AccountVault.Mobile/AccountVault.Mobile.csproj
+```
+
+이 저장소에서는 Android SDK를 워크스페이스 내부 `.android-sdk` 폴더에 설치해 빌드할 수 있습니다.
+
+```powershell
+dotnet build src/AccountVault.Mobile/AccountVault.Mobile.csproj `
+  -t:InstallAndroidDependencies `
+  -f net8.0-android `
+  -p:AndroidSdkDirectory=D:\AIStudio\AccountVault\.android-sdk `
+  -p:AcceptAndroidSDKLicenses=True
+```
+
+모바일 앱을 빌드합니다.
+
+```powershell
+dotnet build src/AccountVault.Mobile/AccountVault.Mobile.csproj `
+  -p:AndroidSdkDirectory=D:\AIStudio\AccountVault\.android-sdk
+```
+
+Android 환경까지 준비된 뒤에는 전체 솔루션을 한 번에 빌드할 수 있습니다.
+
+```powershell
+dotnet build AccountVault.sln
 ```
 
 ## 사용 흐름
@@ -108,30 +167,31 @@ dotnet run
 
 ```text
 AccountVault
-├─ Models
-│  ├─ AccountItem.cs
-│  ├─ VaultData.cs
-│  └─ VaultFile.cs
-├─ Services
-│  ├─ CryptoService.cs
-│  ├─ VaultService.cs
-│  ├─ ClipboardService.cs
-│  └─ AutoLockService.cs
-├─ ViewModels
-│  ├─ BaseViewModel.cs
-│  ├─ RelayCommand.cs
-│  ├─ LoginViewModel.cs
-│  ├─ SetupViewModel.cs
-│  ├─ MainViewModel.cs
-│  └─ AccountEditViewModel.cs
-├─ Views
-│  ├─ LoginWindow.xaml
-│  ├─ SetupWindow.xaml
-│  ├─ MainWindow.xaml
-│  ├─ AccountEditWindow.xaml
-│  └─ PasswordPromptWindow.xaml
-├─ App.xaml
-└─ AccountVault.csproj
+├─ AccountVault.sln
+├─ src
+│  ├─ AccountVault.Core
+│  │  ├─ Models
+│  │  │  ├─ AccountItem.cs
+│  │  │  ├─ VaultData.cs
+│  │  │  └─ VaultFile.cs
+│  │  └─ Services
+│  │     ├─ CryptoService.cs
+│  │     ├─ VaultService.cs
+│  │     ├─ VaultSession.cs
+│  │     └─ VaultException.cs
+│  ├─ AccountVault.Desktop
+│  │  ├─ Services
+│  │  ├─ ViewModels
+│  │  ├─ Views
+│  │  ├─ App.xaml
+│  │  └─ AccountVault.Desktop.csproj
+│  └─ AccountVault.Mobile
+│     ├─ Pages
+│     ├─ Services
+│     ├─ Platforms
+│     ├─ App.xaml
+│     └─ AccountVault.Mobile.csproj
+└─ README.md
 ```
 
 ## 주의사항

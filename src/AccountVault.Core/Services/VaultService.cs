@@ -19,15 +19,17 @@ public sealed class VaultService
     };
 
     private readonly CryptoService _cryptoService;
+    private readonly Func<string> _dataDirectoryFactory;
 
-    public VaultService(CryptoService cryptoService)
+    public VaultService(CryptoService cryptoService, Func<string>? dataDirectoryFactory = null)
     {
         _cryptoService = cryptoService;
+        _dataDirectoryFactory = dataDirectoryFactory ?? GetDefaultDataDirectory;
     }
 
     public string GetDataDirectory()
     {
-        return Path.Combine(AppContext.BaseDirectory, "data");
+        return _dataDirectoryFactory();
     }
 
     public string GetVaultFilePath()
@@ -291,5 +293,10 @@ public sealed class VaultService
         {
             Array.Clear(key);
         }
+    }
+
+    private static string GetDefaultDataDirectory()
+    {
+        return Path.Combine(AppContext.BaseDirectory, "data");
     }
 }

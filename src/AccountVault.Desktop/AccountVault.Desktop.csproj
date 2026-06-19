@@ -5,10 +5,11 @@
     <UseWPF>true</UseWPF>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>AccountVault</AssemblyName>
+    <RootNamespace>AccountVault</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove=".ui-preview\**" />
-    <None Remove=".ui-preview\**" />
+    <ProjectReference Include="..\AccountVault.Core\AccountVault.Core.csproj" />
   </ItemGroup>
 </Project>

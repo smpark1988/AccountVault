@@ -1,0 +1,31 @@
+<Application x:Class="AccountVault.Mobile.App"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <Color x:Key="AccentColor">#2563EB</Color>
+            <Color x:Key="PageBackgroundColor">#F3F5F8</Color>
+            <Color x:Key="TextColor">#1F2937</Color>
+            <Color x:Key="MutedTextColor">#667085</Color>
+
+            <Style TargetType="ContentPage">
+                <Setter Property="BackgroundColor" Value="{StaticResource PageBackgroundColor}" />
+            </Style>
+            <Style TargetType="Label">
+                <Setter Property="TextColor" Value="{StaticResource TextColor}" />
+            </Style>
+            <Style TargetType="Button">
+                <Setter Property="CornerRadius" Value="8" />
+                <Setter Property="MinimumHeightRequest" Value="44" />
+                <Setter Property="Padding" Value="14,8" />
+            </Style>
+            <Style TargetType="Entry">
+                <Setter Property="MinimumHeightRequest" Value="44" />
+                <Setter Property="ClearButtonVisibility" Value="WhileEditing" />
+            </Style>
+            <Style TargetType="Editor">
+                <Setter Property="MinimumHeightRequest" Value="120" />
+            </Style>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
