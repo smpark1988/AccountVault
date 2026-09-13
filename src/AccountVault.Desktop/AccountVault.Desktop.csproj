@@ -7,9 +7,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <AssemblyName>AccountVault</AssemblyName>
     <RootNamespace>AccountVault</RootNamespace>
+    <ApplicationIcon>Assets\AccountVault.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\AccountVault.Core\AccountVault.Core.csproj" />
+    <Resource Include="Assets\AccountVault.ico" />
+    <Resource Include="Assets\AccountVault.png" />
   </ItemGroup>
 </Project>

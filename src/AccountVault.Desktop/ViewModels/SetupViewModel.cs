@@ -24,9 +24,9 @@ public sealed class SetupViewModel : BaseViewModel
     {
         ErrorMessage = string.Empty;
 
-        if (masterPassword.Length < 8)
+        if (string.IsNullOrEmpty(masterPassword))
         {
-            ErrorMessage = "마스터 비밀번호는 8자 이상으로 설정하세요.";
+            ErrorMessage = "마스터 비밀번호는 1자 이상으로 설정하세요.";
             return false;
         }
 

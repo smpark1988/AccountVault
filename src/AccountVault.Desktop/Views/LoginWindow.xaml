@@ -2,8 +2,9 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="AccountVault 로그인"
+        Icon="/AccountVault;component/Assets/AccountVault.ico"
         Width="460"
-        Height="390"
+        Height="470"
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
         Closed="Window_Closed">
@@ -15,19 +16,13 @@
                 VerticalAlignment="Center"
                 HorizontalAlignment="Center">
             <StackPanel>
-                <Border Width="44"
-                        Height="44"
-                        CornerRadius="8"
-                        Background="{StaticResource AccentSoftBrush}"
-                        HorizontalAlignment="Left"
-                        Margin="0,0,0,16">
-                    <TextBlock FontFamily="Segoe MDL2 Assets"
-                               Text="&#xE72E;"
-                               FontSize="20"
-                               Foreground="{StaticResource AccentBrush}"
-                               HorizontalAlignment="Center"
-                               VerticalAlignment="Center" />
-                </Border>
+                <Image Source="/AccountVault;component/Assets/AccountVault.png"
+                       Width="44"
+                       Height="44"
+                       HorizontalAlignment="Left"
+                       Margin="0,0,0,16"
+                       RenderOptions.BitmapScalingMode="HighQuality"
+                       AutomationProperties.Name="AccountVault" />
 
                 <TextBlock Text="AccountVault"
                            Style="{StaticResource PageTitleText}" />

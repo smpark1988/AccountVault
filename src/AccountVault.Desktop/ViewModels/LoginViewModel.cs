@@ -24,7 +24,7 @@ public sealed class LoginViewModel : BaseViewModel
     {
         ErrorMessage = string.Empty;
 
-        if (string.IsNullOrWhiteSpace(masterPassword))
+        if (string.IsNullOrEmpty(masterPassword))
         {
             ErrorMessage = "마스터 비밀번호를 입력하세요.";
             return false;

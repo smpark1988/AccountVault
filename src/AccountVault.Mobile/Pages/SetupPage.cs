@@ -35,9 +35,9 @@ public sealed class SetupPage : ContentPage
         var password = _passwordEntry.Text ?? string.Empty;
         var confirm = _confirmEntry.Text ?? string.Empty;
 
-        if (password.Length < 8)
+        if (string.IsNullOrEmpty(password))
         {
-            await DisplayAlert("확인", "마스터 비밀번호는 8자 이상으로 설정하세요.", "확인");
+            await DisplayAlert("확인", "마스터 비밀번호는 1자 이상으로 설정하세요.", "확인");
             return;
         }
 
